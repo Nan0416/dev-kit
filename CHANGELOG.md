@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Nan0416/dev-kit/compare/v1.1.0...v1.2.0) (2025-10-29)
+
+
+### Features
+
+* **utilities:** export http client, add sleep and gc helper functions ([#3](https://github.com/Nan0416/dev-kit/issues/3)) ([1221234](https://github.com/Nan0416/dev-kit/commit/12212346074b2c50ea8b0722c32fb864726896bd))
+
 # [1.1.0](https://github.com/Nan0416/dev-kit/compare/v1.0.0...v1.1.0) (2025-10-29)
 
 
