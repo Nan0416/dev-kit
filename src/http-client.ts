@@ -1,3 +1,5 @@
+import { ErrorConstructor } from './errors';
+
 export interface Query {
   readonly [key: string]: string;
 }
@@ -51,8 +53,6 @@ export type HttpRequest = HttpGetRequest | HttpPostRequest<any> | HttpPutRequest
 export interface HttpResponse<T> {
   readonly body: T;
 }
-
-export type ErrorConstructor = new (message: string) => Error;
 
 export interface HttpErrorHandlerConfiguration {
   readonly type: 'http-error-handler';
