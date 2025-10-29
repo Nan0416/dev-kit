@@ -1,4 +1,4 @@
-import { UnauthenticatedError, HttpError } from '../src';
+import { UnauthenticatedError, HttpError } from '../../src';
 
 describe('errors', () => {
   test('NotImplementedError', () => {

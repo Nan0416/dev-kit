@@ -1,4 +1,4 @@
-import { isUltrasaErrorBody, ULTRASA_ERROR_TAG, HttpError, toUltrasaErrorBody } from '../src';
+import { isUltrasaErrorBody, ULTRASA_ERROR_TAG, HttpError, toUltrasaErrorBody } from '../../src';
 
 class InvalidRequestError extends HttpError {
   constructor(message: string) {
