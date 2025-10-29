@@ -19,7 +19,7 @@ module.exports = {
   reporters: [
     'default',
     ['jest-junit', {
-      suiteName: '{package}',
+      suiteName: 'dev-kit',
       outputDirectory: 'reports/test-reports',
       outputName: 'junit.xml'
     }]
