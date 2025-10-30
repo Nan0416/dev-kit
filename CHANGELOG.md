@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/Nan0416/dev-kit/compare/v1.2.0...v1.3.0) (2025-10-30)
+
+
+### Features
+
+* **utilities:** add getenv ([#4](https://github.com/Nan0416/dev-kit/issues/4)) ([3250739](https://github.com/Nan0416/dev-kit/commit/32507391ef8672c45aa835d640ea95d51af47b81))
+
 # [1.2.0](https://github.com/Nan0416/dev-kit/compare/v1.1.0...v1.2.0) (2025-10-29)
 
 
