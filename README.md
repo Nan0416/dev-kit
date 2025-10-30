@@ -1,4 +1,4 @@
-# Standard error
+# DevKit
 
 ![release workflow](https://github.com/Nan0416/dev-kit/actions/workflows/release.yml/badge.svg)
 
