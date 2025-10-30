@@ -5,3 +5,4 @@ export * from './metrics';
 export * from './helper-functions';
 export * from './gc';
 export * from './http-client';
+export * from './getenv';
