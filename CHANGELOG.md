@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/Nan0416/dev-kit/compare/v1.3.0...v1.4.0) (2025-10-31)
+
+
+### Features
+
+* **metrics:** add metrics utilities; allow per metrics dimension ([#5](https://github.com/Nan0416/dev-kit/issues/5)) ([a7b623c](https://github.com/Nan0416/dev-kit/commit/a7b623ce5ee4c717cbbbd3d21a9846f1947c805b))
+
 # [1.3.0](https://github.com/Nan0416/dev-kit/compare/v1.2.0...v1.3.0) (2025-10-30)
 
 
