@@ -12,33 +12,38 @@
  * dimesions used to report and query
  */
 export interface Dimensions {
-  [key: string]: string;
+  readonly [key: string]: string;
+}
+
+export interface Dimension {
+  readonly key: string;
+  readonly value: string;
 }
 
 export interface Metrics {
   readonly namespace: string;
 
-  time(name: string, value: number): void;
+  time(name: string, value: number, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void;
 
-  timer<T>(func: () => T, name: string): T;
+  timer<T>(func: () => T, name: string, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): T;
 
-  asyncTimer<T>(func: () => Promise<T>, name: string): Promise<T>;
+  asyncTimer<T>(func: () => Promise<T>, name: string, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): Promise<T>;
 
   /**
    * timer + error counter.
    * @param func
    * @param name
    */
-  asyncCall<T>(func: () => Promise<T>, name: string): Promise<T>;
+  asyncCall<T>(func: () => Promise<T>, name: string, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): Promise<T>;
 
-  count(name: string, value: number): void;
+  count(name: string, value: number, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void;
 
-  incrementCounter(name: string): void;
+  incrementCounter(name: string, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void;
 
-  percent(name: string, value: number): void;
+  percent(name: string, value: number, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void;
 
   // unitless
-  number(name: string, value: number): void;
+  number(name: string, value: number, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void;
 
   /**
    * Close the metrics object. Once it's closed, the metrics object can't be used.
@@ -51,7 +56,7 @@ export interface Metrics {
    */
   flush(): Promise<void>;
 
-  setDimensions(dimensions?: Dimensions): Metrics;
+  setDimensions(dimensions: Dimensions | ReadonlyArray<Dimension> | undefined): Metrics;
 
   setProperty(key: string, value: unknown): Metrics;
 
