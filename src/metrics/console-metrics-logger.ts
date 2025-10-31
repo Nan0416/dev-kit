@@ -1,8 +1,9 @@
-import { Dimensions, Metrics, MetricsFactory } from './metrics-types';
+import { Dimension, Dimensions, Metrics, MetricsFactory } from './metrics-types';
+import { convertDimensionsToDimensionArray, mergeDimensions } from './utilities';
 
-export interface MetricItem {
+interface MetricItem {
   readonly namespace: string;
-  readonly dimensions?: Dimensions;
+  readonly dimensions?: ReadonlyArray<Dimension>;
   readonly name: string;
   readonly value: number;
   readonly unit: string;
@@ -11,19 +12,19 @@ export interface MetricItem {
 
 export class ConsoleMetrics implements Metrics {
   readonly namespace: string;
-  private dimensions: Dimensions;
+  private dimensions: ReadonlyArray<Dimension>;
   private properties: { [key: string]: unknown };
   private readonly level: 'info' | 'debug';
 
   constructor(namespace: string) {
     this.namespace = namespace;
-    this.dimensions = {};
+    this.dimensions = [];
     this.properties = {};
     this.level = 'info';
   }
 
-  setDimensions(dimensions?: Dimensions): Metrics {
-    this.dimensions = dimensions ?? {};
+  setDimensions(dimensions: Dimensions | ReadonlyArray<Dimension> | undefined): Metrics {
+    this.dimensions = convertDimensionsToDimensionArray(dimensions);
     return this;
   }
 
@@ -51,10 +52,10 @@ export class ConsoleMetrics implements Metrics {
   async flush(): Promise<void> {}
   async close(): Promise<void> {}
 
-  time(name: string, value: number): void {
+  time(name: string, value: number, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void {
     this.print({
       namespace: this.namespace,
-      dimensions: this.dimensions,
+      dimensions: mergeDimensions(this.dimensions, convertDimensionsToDimensionArray(dimensions)),
       name,
       value,
       unit: 'ms',
@@ -62,12 +63,12 @@ export class ConsoleMetrics implements Metrics {
     });
   }
 
-  timer<T>(func: () => T, name: string): T {
+  timer<T>(func: () => T, name: string, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): T {
     const startTimestamp = Date.now();
     const result = func();
     this.print({
       namespace: this.namespace,
-      dimensions: this.dimensions,
+      dimensions: mergeDimensions(this.dimensions, convertDimensionsToDimensionArray(dimensions)),
       name,
       value: Date.now() - startTimestamp,
       unit: 'ms',
@@ -76,12 +77,12 @@ export class ConsoleMetrics implements Metrics {
     return result;
   }
 
-  async asyncTimer<T>(func: () => Promise<T>, name: string): Promise<T> {
+  async asyncTimer<T>(func: () => Promise<T>, name: string, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): Promise<T> {
     const startTimestamp = Date.now();
     const result = await func();
     this.print({
       namespace: this.namespace,
-      dimensions: this.dimensions,
+      dimensions: mergeDimensions(this.dimensions, convertDimensionsToDimensionArray(dimensions)),
       name,
       value: Date.now() - startTimestamp,
       unit: 'ms',
@@ -90,10 +91,10 @@ export class ConsoleMetrics implements Metrics {
     return result;
   }
 
-  count(name: string, value: number): void {
+  count(name: string, value: number, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void {
     this.print({
       namespace: this.namespace,
-      dimensions: this.dimensions,
+      dimensions: mergeDimensions(this.dimensions, convertDimensionsToDimensionArray(dimensions)),
       name,
       value,
       unit: 'count',
@@ -101,10 +102,10 @@ export class ConsoleMetrics implements Metrics {
     });
   }
 
-  incrementCounter(name: string): void {
+  incrementCounter(name: string, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void {
     this.print({
       namespace: this.namespace,
-      dimensions: this.dimensions,
+      dimensions: mergeDimensions(this.dimensions, convertDimensionsToDimensionArray(dimensions)),
       name,
       value: 1,
       unit: 'count',
@@ -112,12 +113,13 @@ export class ConsoleMetrics implements Metrics {
     });
   }
 
-  async asyncCall<T>(func: () => Promise<T>, name: string): Promise<T> {
+  async asyncCall<T>(func: () => Promise<T>, name: string, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): Promise<T> {
     const startTimestamp = Date.now();
+    const mergedDimensions = mergeDimensions(this.dimensions, convertDimensionsToDimensionArray(dimensions));
 
     this.print({
       namespace: this.namespace,
-      dimensions: this.dimensions,
+      dimensions: mergedDimensions,
       name: `${name}.Count`,
       value: 1,
       unit: 'count',
@@ -128,7 +130,7 @@ export class ConsoleMetrics implements Metrics {
       const result = await func();
       this.print({
         namespace: this.namespace,
-        dimensions: this.dimensions,
+        dimensions: mergedDimensions,
         name: `${name}.Error`,
         value: 0,
         unit: 'count',
@@ -138,7 +140,7 @@ export class ConsoleMetrics implements Metrics {
     } catch (err) {
       this.print({
         namespace: this.namespace,
-        dimensions: this.dimensions,
+        dimensions: mergedDimensions,
         name: `${name}.Error`,
         value: 1,
         unit: 'count',
@@ -148,7 +150,7 @@ export class ConsoleMetrics implements Metrics {
     } finally {
       this.print({
         namespace: this.namespace,
-        dimensions: this.dimensions,
+        dimensions: mergedDimensions,
         name: `${name}.Latency`,
         value: Date.now() - startTimestamp,
         unit: 'ms',
@@ -157,10 +159,10 @@ export class ConsoleMetrics implements Metrics {
     }
   }
 
-  number(name: string, value: number): void {
+  number(name: string, value: number, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void {
     this.print({
       namespace: this.namespace,
-      dimensions: this.dimensions,
+      dimensions: mergeDimensions(this.dimensions, convertDimensionsToDimensionArray(dimensions)),
       name,
       value: value,
       unit: 'unitless',
@@ -168,10 +170,10 @@ export class ConsoleMetrics implements Metrics {
     });
   }
 
-  percent(name: string, value: number): void {
+  percent(name: string, value: number, dimensions?: Dimensions | ReadonlyArray<Dimension> | undefined): void {
     this.print({
       namespace: this.namespace,
-      dimensions: this.dimensions,
+      dimensions: mergeDimensions(this.dimensions, convertDimensionsToDimensionArray(dimensions)),
       name,
       value: Math.round(value * 1000) / 1000,
       unit: 'percent',
